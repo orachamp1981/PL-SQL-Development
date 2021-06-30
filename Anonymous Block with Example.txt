@@ -1,0 +1,30 @@
+What is Anonymous block in Oracle?
+
+Do not confuse a lot, you will find several booklets for the same to learn in detail. But simply block which is not going
+to save in Databse is anonymous or run time block. Following are the simple examples to understand no need structure just test in Databse.
+
+
+Declare
+A number:= 10;
+B char(10) := 'Nadir Ali';
+C Varchar2(30) := 'Senior Oracle Developer';
+D Date := Sysdate;
+E Varchar2(40);
+Begin
+dbms_output.put_line(A);
+dbms_output.put_line(B);
+dbms_output.put_line(C);
+dbms_output.put_line(D);
+E:= B|| ' ' ||C;
+dbms_output.put_line(E);
+End;
+
+
+Declare
+A number;
+Begin
+For A in 1..10 loop
+dbms_output.put_line(A);
+end loop;
+End;
+
