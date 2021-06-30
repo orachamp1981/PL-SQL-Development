@@ -1,7 +1,7 @@
 What is Anonymous block in Oracle?
 
-Do not confuse a lot, you will find several booklets for the same to learn in detail. But simply block which is not going
-to save in Databse is anonymous or run time block. Following are the simple examples to understand no need structure just test in Databse.
+Do not confuse, you will find several booklets for the same to learn in detail. But simply block which is not going to save in Databse is anonymous or run time block. 
+Following are the simple examples to get exposure no need of structure just test in Oracle Database.
 
 
 Declare
@@ -28,3 +28,10 @@ dbms_output.put_line(A);
 end loop;
 End;
 
+Declare
+A number;
+Begin
+For A in 1..10 loop
+dbms_output.put_line(2 ||' X ' || ' ' || A || ' ' || ' = ' || 2*A);
+end loop;
+End;
