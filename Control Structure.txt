@@ -87,4 +87,21 @@ dbms_output.put_line ('Computed values are invalid');
 end if;
 end; 
 
+One important factor would like to add with example, this will show how code be made less by using built-in functions
+
+DECLARE
+grade CHAR(1);
+BEGIN
+grade := 'B';
+CASE grade
+WHEN 'A' THEN DBMS_OUTPUT.PUT_LINE('Excellent');
+WHEN 'B' THEN DBMS_OUTPUT.PUT_LINE('Very Good');
+WHEN 'C' THEN DBMS_OUTPUT.PUT_LINE('Good');
+WHEN 'D' THEN DBMS_OUTPUT.PUT_LINE('Fair');
+WHEN 'F' THEN DBMS_OUTPUT.PUT_LINE('Poor');
+ELSE DBMS_OUTPUT.PUT_LINE('No such grade');
+END CASE;
+END;
+
+
 There are wide range of examples respect to data integratin which I will share time by time
