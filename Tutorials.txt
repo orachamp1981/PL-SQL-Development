@@ -1,0 +1,4 @@
+PL/SQL Guide
+https://www.ebi.ac.uk/pdbe/docs/OraCIF/sqluser.pdf
+SQL Guide
+https://docs.oracle.com/cd/E11882_01/server.112/e41084.pdf
