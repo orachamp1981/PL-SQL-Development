@@ -1,0 +1,90 @@
+What is Control Structure in Oracle?
+
+In simple words Control Structure will provide an option to set, reterive data on the basis of condition set by user. At first go I will illustrate the depth
+and then with example.
+
+1. Simple if condition 
+If condition
+then
+print('');
+End if;
+
+2. Simple if condition with rest
+If condition
+then
+print('ONE');
+else
+print('TWO');
+End if;
+
+3. If condition with nesting and rest
+If condition 1
+then
+print('ONE');
+elsif condition 2
+print('TWO');
+elsif condition 3
+print('Three');
+elsif condition 4
+print('Four');
+else
+print('Three');
+End if;
+
+
+By example we have observed there might be simple, multiple, nested and so on let me show you with example.
+
+Declare
+A number:= 5;
+B number:= 10;
+Begin
+if A > B 
+then
+dbms_output.put_line (A ||'is greater than' || B);
+end if;
+end; 
+
+Declare
+A number:= 5;
+B number:= 10;
+Begin
+if B > A 
+then
+dbms_output.put_line (B ||' ' ||'is greater than' || ' ' || A);
+end if;
+end; 
+
+Declare
+A number:= 5;
+B number:= 10;
+Begin
+if A > B 
+then
+dbms_output.put_line (A ||' ' ||'is greater than' || ' ' || B);
+else
+dbms_output.put_line (A ||' ' ||'is not greater than' || ' ' || B);
+end if;
+end; 
+
+Declare
+A number:= 5;
+B number:= 10;
+C number:= 20;
+Begin
+if A < B and B < C
+then
+dbms_output.put_line (A ||' ' ||'is not greater than' || ' ' || B ||' ' || 'also less than'|| C);
+elsif
+A < B and B > C
+then
+dbms_output.put_line (A ||' ' ||'is not greater than' || ' ' || B ||' ' || 'but B is greater than'|| C);
+elsif
+A=B and B=C
+then
+dbms_output.put_line (A||',' ||B||','|| C ||' ' ||'are equal');
+else
+dbms_output.put_line ('Computed values are invalid');
+end if;
+end; 
+
+There are wide range of examples respect to data integratin which I will share time by time
