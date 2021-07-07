@@ -1,3 +1,3 @@
 # PL-SQL-Development
-PL/SQL Development details has been initiated to give exposure with details. I am going to utilize its importance in consice way definetly details being part for the same but will be interesting.
+PL/SQL Development practice has been initiated to give exposure and details whereabouts. I am going to utilize its importance in concise way definitely details being big part will be interesting in digging more and more.
 Additionally this will help out recruiter as well
