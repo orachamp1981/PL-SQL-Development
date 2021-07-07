@@ -1,4 +1,3 @@
-
 Scenario 1:-
 
 Suppose we need to find out divisible of any number, let assume what are the divisible of 3.
@@ -32,3 +31,12 @@ Begin
 
 Output is according to our need.
 
+Scenario 3:-
+
+On running toad or other tool bind parameter do the same job just give the value at run time.
+
+select * from
+(
+select (:a|| ' ' || ' X ' || ' ' ||rownum || ' ' ||' = ' || ' ' ||:a * rownum)Cycle_table 
+from (select * from dual connect by level <= 10)
+)
