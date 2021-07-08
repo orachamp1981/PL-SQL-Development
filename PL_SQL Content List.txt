@@ -1,0 +1,28 @@
+
+
+
+
+
+
+			PL/SQL Content List
+	List of topics are as under on which we discuss and provide real scenario examples along with test cases.
+	This list will cover the major topics to understand and use in the field of Oracle Application Development, PL/SQL Development etc.
+	"One Famous quote, there is always room for more" so discuss topic will give you exposure sometime solution as well
+
+
+
+	1. 	Data Types in Oracle PL/SQL Developer
+	2. 	Conditional Flow 
+	3. 	Function (PL/SQL Subprogram)
+	4. 	Procedure (PL/SQL Subprogram)
+ 	5. 	Scope of Function over Procedure or Procedure over function
+	6. 	Cursor types and scope in PL/SQL Development
+        7. 	Reference Cursor
+        8. 	Packages and importance of Packages in application Development
+        9. 	Collections
+ 	
+
+
+
+	We will discuss on the same and added our contect list time by time where needed.
+	
