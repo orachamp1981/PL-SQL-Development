@@ -1,0 +1,92 @@
+					Error Handling or Exception in PL/SQL
+	Before Proceeding into definition let's begin with example to understand the basic handling of error/exception.
+	Terminologies Error and Exceptions are two different things but we will handle it in many ways.
+
+
+        CREATE TABLE EMP ( 
+  	EMP_NO    NUMBER, 
+  	EMP_NAME  VARCHAR2 (100), 
+  	SALARY    NUMBER, 
+  	MANAGER   NUMBER)
+	/
+	insert into emp
+	values
+	(2000, 'Nadir Ali', 50000, 1000)
+        /
+    	commit
+	/
+	
+	Now use sql query to reterive data
+        Select * from emp where emp_no = 2001
+        it will give no result but query run
+
+        IF WE USE THE FOLLOWING CODE TO CREATE ANONYMOUS BLOCK IT THROUGH ERROR A THE TIME OF COMPILING
+        Declare
+	A NUMBER;
+	BEGIN
+	Select EMP_NO 
+	INTO
+	A
+	from emp where emp_no = 2001;
+	DBMS_OUTPUT.PUT_LINE(A);
+	END;
+        ERROR :- ORA-01403 NO DATA FOUND
+        
+	The use of exception will begin to compile the block
+	
+	Declare
+	A NUMBER;
+	BEGIN
+	Select EMP_NO 
+	INTO
+	A
+	from emp where emp_no = 2001;
+	Exception
+	when no_data_found 
+	then
+	null;
+	DBMS_OUTPUT.PUT_LINE(nvl(A, 0));
+	END;
+        It will successfully compiled the block and give the result 0 as we set it give zero if null found. 
+
+	Now consider other example:-
+        By adding one more row which is duplicate in terms of emp_no
+
+	insert into emp
+	values
+	(2000, 'Nadir Ali1', 50000, 1000)
+	/
+        commit
+	/
+        
+        NOW USE THE FOLLOWING CODE TO CREATE ANONYMOUS BLOCK BY SET DUPLICATE EMP_NO IS SEARCH IT THROUGH ERROR AT THE TIME OF COMPILING
+        Declare
+	A NUMBER;
+	BEGIN
+	Select EMP_NO 
+	INTO
+	A
+	from emp where emp_no = 2000;
+	DBMS_OUTPUT.PUT_LINE(A);
+	END;
+	Error should be of too many rows we will handle it with following modification
+
+       	Declare
+	A NUMBER;
+	BEGIN
+	Select EMP_NO 
+	INTO
+	A
+	from emp where emp_no = 2000;
+	Exception
+	when too_many_rows
+	then
+	null;
+	DBMS_OUTPUT.PUT_LINE(a);
+	END;
+        It will compile and give output which is right in the context.
+
+        In above two examples we have found the blocks are right but exception raised due to the following reason
+        -- In example one nothing wrong but null caused error that handled with exception.
+        -- In second example rows are duplicate therefore error raised and handled with exception but if we use loop and cursor than no error found.
+
