@@ -1,0 +1,80 @@
+				User defined PL/SQL functions Scope, Limitation, Usage and disadvantages
+
+ 	
+
+		"Once function created it can be invoke through sql query."
+		
+		On the basis of above statement we will discuss three main topics as under:-
+
+		1. Scope:-
+			Function can be useful for compute values from database tables and without tables.
+			IN parameter/s are part of it but not necessary, Out parameter is mandatory to retrieve value.
+
+
+		2. Limitations:-
+			Do not use for DML or any operation that update values in Database as out limit thing. We have procedure for the same purpose later discuss it.
+			Do not use exception section here we can do it but again out limit thing here.
+                        
+
+		
+		3. Usage:-
+			Functions calling area are, sql queries on Oracle SQL, Oracle Forms and Reports functions, PL/SQL scope.
+			Function can through no value in various case which should be handled properly. So we have to set our meaningful usage.
+
+	
+			
+		Example:-1
+			
+		Now consider following function:-
+
+		CREATE OR REPLACE FUNCTION GET_CONTENTS(REQ_TYPE VARCHAR2) 
+		RETURN VARCHAR2 IS
+		L_RESULT VARCHAR2(150);
+		BEGIN
+	 	IF REQ_TYPE = 'OSUSER' THEN
+	 	select sys_context('userenv','os_user')os_user INTO L_RESULT  from dual;
+	 	END IF;
+	 	RETURN L_RESULT;
+		END
+		/
+
+		select GET_CONTENTS('OSUSER') FROM DUAL;	
+
+
+		Above is simple function in which define to get OS name by passing parameter='OSUSER' we will get output against it. Try yourself.
+
+
+		
+			
+			
+		Example:- 2
+
+		CREATE OR REPLACE FUNCTION ERP.GET_SYSTEM_NAME
+   		RETURN VARCHAR2
+   		-- CREATED BY AWAIS ASLAM 
+		IS
+   		v_OSNAME    VARCHAR2 (4000);
+ 		BEGIN
+ 		SELECT sys_context('USERENV', 'OS_USER') INTO V_OSNAME FROM DUAL  ;
+       		RETURN v_OSNAME;
+  		EXCEPTION
+   		WHEN NO_DATA_FOUND
+   		THEN
+      		v_OSNAME := ' ';
+      		return v_OSNAME;
+		END;
+		/	
+			
+		select GET_CONTENTS('OSUSER') FROM DUAL;
+		
+
+		In this example we define to get OS name without passing any parameter but output comes. Try yourself.
+
+
+		Scope of above example is useful when working as Database Developer but on front end function scope died as we have webutil library.
+
+		I will going to broaden functions more in next coming
+
+
+
+
