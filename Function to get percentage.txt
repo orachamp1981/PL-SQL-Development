@@ -1,0 +1,36 @@
+	PL/SQL FUNCTION TO OBTAIN PERCENTAGE BY PROVIDING TWO INPUTS
+
+	CREATE FUNCTION FIND_PERCENT(MARKS_OBTAINED NUMBER, TOTAL_MARKS NUMBER)
+	RETURN NUMBER
+	IS
+	PERCENT NUMBER;
+        BEGIN
+        IF MARKS_OBTAINED <= 0 OR TOTAL_MARKS <= 0
+	THEN
+	PERCENT:=0;
+	RETURN(PERCENT);
+	ELSIF
+	MARKS_OBTAINED <= 0 AND TOTAL_MARKS <= 0
+	THEN
+	PERCENT:=0;
+	RETURN(PERCENT);
+        ELSIF
+        TOTAL_MARKS < MARKS_OBTAINED
+	THEN
+        PERCENT:= (TOTAL_MARKS/MARKS_OBTAINED)*100;
+	RETURN(ROUND(PERCENT));
+	ELSE
+        PERCENT:= (MARKS_OBTAINED/TOTAL_MARKS)*100;
+	RETURN(ROUND(PERCENT));
+        END IF;
+	END;
+
+	THIS FUNCTION WILL ACCEPT ALL ARGUMENTS DEPENDS ON YOUR SEARCH.
+
+        select find_percent('','') from dual
+	select find_percent(552,850) from dual
+ 	select find_percent(850,552) from dual
+       	select find_percent(-850,552) from dual
+	select find_percent(-850,552) from dual
+
+	AS discussed before this function can be optimized depends on the application type
