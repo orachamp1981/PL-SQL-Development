@@ -1,0 +1,56 @@
+	AGE CALCULATION FUNCTION IN PL/SQL
+
+	I will try my best to build these functions on the basis of return in all cases to avoid error return. Therefore not sure or might be a slim possibility of non-returning.
+
+
+	CREATE OR REPLACE FUNCTION CLACULATE_AGE(DATE_OF_BIRTH VARCHAR2)
+	RETURN VARCHAR2
+	IS
+	CHANGE_IN_DATE DATE;
+	AGE VARCHAR2(100);
+	BEGIN
+	IF CHANGE_IN_DATE NOT IN (TO_DATE(CHANGE_IN_DATE, 'DD-MON-RRRR'))
+	THEN
+	CHANGE_IN_DATE:=null;
+	AGE:='PLEASE PROVIDE FORMAT = DD-MON-RRRR';
+	RETURN(AGE);
+	ELSIF DATE_OF_BIRTH IS NULL 
+	THEN
+	CHANGE_IN_DATE:=null;
+	AGE:='PLEASE PROVIDE FORMAT = DD-MON-RRRR';
+	RETURN(AGE);
+	ELSE
+	BEGIN
+	CHANGE_IN_DATE:=TO_DATE(DATE_OF_BIRTH);
+	SELECT ROUND ( (SYSDATE - TO_DATE (CHANGE_IN_DATE) ) /365, 0 ) 
+	INTO 
+	AGE
+	FROM DUAL;
+	RETURN(AGE);
+	EXCEPTION
+	WHEN OTHERS THEN 
+	AGE:='PLEASE PROVIDE FORMAT =  DD-MON-RRRR';
+	RETURN(AGE);
+	END;
+	END IF;
+	END;
+
+
+	Calling through SQL query with different criteria
+	SELECT CLACULATE_AGE('') AGE FROM DUAL
+	SELECT CLACULATE_AGE('10-jul') AGE FROM DUAL
+	SELECT CLACULATE_AGE('10') AGE FROM DUAL
+	SELECT CLACULATE_AGE('10-jul') AGE FROM DUAL
+	SELECT CLACULATE_AGE('16-july-1981') AGE FROM DUAL
+	SELECT CLACULATE_AGE('16-jul-1981') AGE FROM DUAL
+	SELECT CLACULATE_AGE('ABC') AGE FROM DUAL
+	SELECT CLACULATE_AGE('123') AGE FROM DUAL
+
+
+	please do not use the following
+	SELECT CLACULATE_AGE() AGE FROM DUAL
+	as function accept argumet in varchar2 so instead of said use as mentioned above in null quotes.
+
+
+
+	IF calling through forms we have control on accurate input provide to function before calling but other modes might not therefore by keeping all facts that has been made.
