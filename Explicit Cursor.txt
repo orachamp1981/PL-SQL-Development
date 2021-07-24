@@ -1,0 +1,108 @@
+----------------------------------------Explicit Cursor -----------------------------------------------------------------------------
+When you need precise control over query processing, you can explicitly declare a cursor in the declarative part of any PL/SQL block, subprogram, or package.
+
+You use three commands to control a cursor: OPEN, FETCH, and CLOSE. First, you initialize the cursor with the OPEN statement, which identifies the result set. 
+Then, you can execute FETCH repeatedly until all rows have been retrieved, or you can use the BULK COLLECT clause to fetch all rows at once. When the last row has been
+processed, you release the cursor with the CLOSE statement.
+
+This technique requires more code than other techniques such as the implicit cursor FOR loop. Its advantage is flexibility. You can:
+■ Process several queries in parallel by declaring and opening multiple cursors.
+■ Process multiple rows in a single loop iteration, skip rows, or split the processing
+into more than one loop.
+
+
+
+--------------------------Declaring and Defining Explicit Cursors ------------------------------------------------------------------------
+You can either declare an explicit cursor first and then define it later in the same block, subprogram, or package, or declare and define it at the same time.
+
+An explicit cursor declaration, which only declares a cursor, has this syntax:
+CURSOR cursor_name [ parameter_list ] RETURN return_type;
+
+An explicit cursor definition has this syntax:
+CURSOR cursor_name [ parameter_list ] [ RETURN return_type ]
+IS select_statement;
+
+If you declared the cursor earlier, then the explicit cursor definition defines it; otherwise, it both declares and defines it.
+
+-------------------------------Declaration Example ---------------------------------------
+DECLARE
+CURSOR c1 RETURN departments%ROWTYPE; -- Declare c1
+CURSOR c2 IS -- Declare and define c2
+SELECT employee_id, job_id, salary FROM employees
+WHERE salary > 2000;
+CURSOR c1 RETURN departments%ROWTYPE IS -- Define c1,
+SELECT * FROM departments -- repeating return type
+WHERE department_id = 110;
+CURSOR c3 RETURN locations%ROWTYPE; -- Declare c3
+CURSOR c3 IS -- Define c3,
+SELECT * FROM locations -- omitting return type
+WHERE country_id = 'JP';
+BEGIN
+NULL;
+END;
+
+
+---------------------------- Cursor Example ----------------------------------------------------------------
+
+DECLARE
+v_jobid employees.job_id%TYPE; -- variable for job_id
+v_lastname employees.last_name%TYPE; -- variable for last_name
+CURSOR c1 IS SELECT last_name, job_id FROM employees
+WHERE REGEXP_LIKE (job_id, 'S[HT]_CLERK');
+v_employees employees%ROWTYPE; -- record variable for row
+CURSOR c2 is SELECT * FROM employees
+WHERE REGEXP_LIKE (job_id, '[ACADFIMKSA]_M[ANGR]');
+BEGIN
+OPEN c1; -- open the cursor before fetching
+LOOP
+FETCH c1 INTO v_lastname, v_jobid; -- fetches 2 columns into variables
+EXIT WHEN c1%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE( RPAD(v_lastname, 25, ' ') || v_jobid );
+END LOOP;
+CLOSE c1;
+DBMS_OUTPUT.PUT_LINE( '-------------------------------------' );
+OPEN c2;
+LOOP
+FETCH c2 INTO v_employees; -- fetches entire row into the v_employees record
+EXIT WHEN c2%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE( RPAD(v_employees.last_name, 25, ' ') ||
+v_employees.job_id );
+END LOOP;
+CLOSE c2;
+END;
+
+---------------------------------------------------Cursor with Parameter ----------------------------------------------------------
+
+DECLARE
+CURSOR c (job VARCHAR2, max_sal NUMBER) IS
+SELECT last_name, first_name, (salary - max_sal) overpayment
+FROM employees
+WHERE job_id = job
+AND salary > max_sal
+ORDER BY salary;
+PROCEDURE print_overpaid IS
+last_name_ employees.last_name%TYPE;
+first_name_ employees.first_name%TYPE;
+overpayment_ employees.salary%TYPE;
+BEGIN
+LOOP
+FETCH c INTO last_name_, first_name_, overpayment_;
+EXIT WHEN c%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(last_name_ || ', ' || first_name_ ||
+' (by ' || overpayment_ || ')');
+END LOOP;
+END print_overpaid;
+BEGIN
+DBMS_OUTPUT.PUT_LINE('----------------------');
+DBMS_OUTPUT.PUT_LINE('Overpaid Stock Clerks:');
+DBMS_OUTPUT.PUT_LINE('----------------------');
+OPEN c('ST_CLERK', 5000);
+print_overpaid;
+CLOSE c;
+DBMS_OUTPUT.PUT_LINE('-------------------------------');
+DBMS_OUTPUT.PUT_LINE('Overpaid Sales Representatives:');
+DBMS_OUTPUT.PUT_LINE('-------------------------------');
+OPEN c('SA_REP', 10000);
+print_overpaid;
+CLOSE c;
+END;
