@@ -1,0 +1,53 @@
+CREATE OR REPLACE PROCEDURE award_bonus (emp_id NUMBER, bonus NUMBER) AS
+commission REAL;
+comm_missing EXCEPTION;
+BEGIN -- executable part starts here
+SELECT commission_pct / 100 INTO commission FROM employees
+WHERE employee_id = emp_id;
+IF commission IS NULL THEN
+RAISE comm_missing;
+ELSE
+UPDATE employees SET salary = salary + bonus*commission
+WHERE employee_id = emp_id;
+END IF;
+EXCEPTION -- exception-handling part starts here
+WHEN comm_missing THEN
+DBMS_OUTPUT.PUT_LINE('This employee does not receive a commission.');
+commission := 0;
+WHEN OTHERS THEN
+NULL; -- for other exceptions do nothing
+END award_bonus;
+
+CALL award_bonus(150, 400);
+
+
+-----------------------Forward Declaration for a Nested Subprogram
+DECLARE
+PROCEDURE proc1(number1 NUMBER); -- forward declaration
+PROCEDURE proc2(number2 NUMBER) IS
+BEGIN
+proc1(number2); -- calls proc1
+END;
+PROCEDURE proc1(number1 NUMBER) IS
+BEGIN
+proc2 (number1); -- calls proc2
+END;
+BEGIN
+NULL;
+END;
+
+-------------------------------------------------Using the OUT Mode
+DECLARE
+emp_num NUMBER(6) := 120;
+bonus NUMBER(6) := 50;
+emp_last_name VARCHAR2(25);
+PROCEDURE raise_salary (emp_id IN NUMBER, amount IN NUMBER,
+emp_name OUT VARCHAR2) IS
+BEGIN
+UPDATE employees SET salary = salary + amount WHERE employee_id = emp_id;
+SELECT last_name INTO emp_name FROM employees WHERE employee_id = emp_id;
+END raise_salary;
+BEGIN
+raise_salary(emp_num, bonus, emp_last_name);
+DBMS_OUTPUT.PUT_LINE('Salary has been updated for: ' || emp_last_name);
+END;
