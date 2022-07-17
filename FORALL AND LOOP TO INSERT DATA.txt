@@ -1,0 +1,58 @@
+CREATE TABLE EMP_NEW AS SELECT * FROM EMP WHERE ROWNUM = 0;
+ALTER TABLE EMP_NEW ADD (DATE_CREATED DATE DEFAULT SYSDATE); --- No need to write trigger just default value can do the same
+CREATE TABLE EMP_NEW1 AS SELECT * FROM EMP WHERE ROWNUM = 0;
+
+
+
+----------------Insert Data through normal Cursor with LOOP -------------
+DECLARE 
+CURSOR C1 IS SELECT * FROM EMP;
+BEGIN
+FOR I IN C1 LOOP
+INSERT INTO EMP_NEW
+(EMPNO, ENAME, JOB, MGR, HIREDATE, SAL, COMM, DEPTNO)
+VALUES
+(I.EMPNO, I.ENAME, I.JOB, I.MGR, I.HIREDATE, I.SAL, I.COMM, I.DEPTNO);
+END LOOP;
+COMMIT;
+END;
+
+
+------------------Insert Data through FORALL -----------------------
+
+Declare
+     cursor c_emp_cur is 
+            select t.empno, t.ename, t.job,
+            t.sal, t.hiredate, t.sal,
+            t.comm, t.deptno
+                           from emp t; 
+                
+     type c_emp_array_t is table of emp%rowtype ;  -- define collection for rows selected
+     
+     k_emp_rows_max constant integer := 500;         -- defines the maximum rows per fetch
+     l_emp_list     c_emp_array_t;                   -- define variable of rows collection 
+ begin
+    open c_emp_cur; 
+       
+    loop 
+        fetch c_emp_cur                              -- fetch up to LIMIT rows from cursor
+         bulk collect 
+         into l_emp_list
+         limit k_emp_rows_max; 
+        
+        forall i in 1 .. l_emp_list.count         -- run insert for ALL rows in the collection
+            insert into EMP_NEW1(empno, ename, job)
+                 values( l_emp_list(i).empno 
+                       , l_emp_list(i).ename
+                       , l_emp_list(i).job);
+            
+    exit when c_emp_cur%notfound;                     -- no more rows so exit
+    end loop;
+    
+    close c_emp_cur; 
+    commit;                                    
+    exception
+   when others then
+        null;
+        raise;
+ end;   
