@@ -1,0 +1,57 @@
+----------- Associative array:
+
+Declare 
+Type Courses is Table of number index by Varchar2(64);
+Subject Courses;
+i varchar2(64);
+Begin
+-- Adding Elements in assosiative Array
+Subject('Cheistry'):=10;
+Subject('Physics'):= 20;
+Subject('Biology'):=30;
+
+
+-- Change value associated with key 'Biology':
+Subject('Biology'):=40;
+
+-- Print associative array:
+
+i:= Subject.First; -- First Element of Array
+--DBMS_output.put_line(i);
+
+While i is not null loop
+DBMS_output.put_line('Subjects  availabe is  ' || i || ' in numbers ' || Subject(i));
+i := Subject.Next(i);
+End Loop;
+End; 
+
+
+---------------Varray (Variable-Size Array)
+A varray is appropriate when:
+• You know the maximum number of elements.
+• You usually access the elements sequentially.
+Because you must store or retrieve all elements at the same time, a varray might be
+impractical for large numbers of elements.
+
+
+DECLARE
+TYPE Foursome IS VARRAY(4) OF VARCHAR2(15); -- VARRAY type
+-- varray variable initialized with constructor:
+team Foursome := Foursome('John', 'Mary', 'Alberto', 'Juanita');
+PROCEDURE print_team (heading VARCHAR2) IS
+BEGIN
+DBMS_OUTPUT.PUT_LINE(heading);
+FOR i IN 1..4 LOOP
+DBMS_OUTPUT.PUT_LINE(i || '.' || team(i));
+END LOOP;
+DBMS_OUTPUT.PUT_LINE('---');
+END;
+BEGIN
+print_team('2001 Team:');
+team(3) := 'Pierre'; -- Change values of two elements
+team(4) := 'Yvonne';
+print_team('2005 Team:');
+-- Invoke constructor to assign new values to varray variable:
+team := Foursome('Arun', 'Amitha', 'Allan', 'Mae');
+print_team('2009 Team:');
+END;
