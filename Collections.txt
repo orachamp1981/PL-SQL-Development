@@ -55,3 +55,53 @@ print_team('2005 Team:');
 team := Foursome('Arun', 'Amitha', 'Allan', 'Mae');
 print_team('2009 Team:');
 END;
+
+
+-----------------------Nested Tables --------------------------------
+A nested table is appropriate when:
+• The number of elements is not set.
+• Index values are not consecutive.
+• You must delete or update some elements, but not all elements simultaneously.
+Nested table data is stored in a separate store table, a system-generated
+database table. When you access a nested table, the database joins the nested
+table with its store table. This makes nested tables suitable for queries and
+updates that affect only some elements of the collection.
+• You would create a separate lookup table, with multiple entries for each row of the
+main table, and access it through join queries.
+
+Declare
+     cursor c_emp_cur is 
+            select t.empno, t.ename, t.job,
+            t.sal, t.hiredate, t.sal,
+            t.comm, t.deptno
+                           from emp t; 
+                
+     type c_emp_array_t is table of emp%rowtype ;  -- define collection for rows selected
+     
+     k_emp_rows_max constant integer := 500;         -- defines the maximum rows per fetch
+     l_emp_list     c_emp_array_t;                   -- define variable of rows collection 
+ begin
+    open c_emp_cur; 
+       
+    loop 
+        fetch c_emp_cur                              -- fetch up to LIMIT rows from cursor
+         bulk collect 
+         into l_emp_list
+         limit k_emp_rows_max; 
+        
+        forall i in 1 .. l_emp_list.count         -- run insert for ALL rows in the collection
+            insert into EMP_NEW1(empno, ename, job)
+                 values( l_emp_list(i).empno 
+                       , l_emp_list(i).ename
+                       , l_emp_list(i).job);
+            
+    exit when c_emp_cur%notfound;                     -- no more rows so exit
+    end loop;
+    
+    close c_emp_cur; 
+    commit;                                    
+    exception
+   when others then
+        null;
+        raise;
+ end;   
