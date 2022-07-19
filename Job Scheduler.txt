@@ -16,10 +16,12 @@ values
 
 end;
 
+grant execute on DBMS_SCHEDULER to scott;
+grant create job to scott;
 
 BEGIN
   DBMS_SCHEDULER.create_job (
-    job_name        => 'fetch employee count',
+    job_name        => 'fetch_employee_count',
     job_type        => 'PLSQL_BLOCK',
     job_action      => 'BEGIN scott.emp_count_minutes; END;',
     start_date      => SYSTIMESTAMP,
