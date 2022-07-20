@@ -1,0 +1,92 @@
+					Record Type and Variable
+
+Confusion occur mostly in understanding between type and variable in record.
+
+1. Record variable is built-in dependant on table/cursor type for assignment.
+
+2. Record Type created with command and record variable builtin can used to assign type to variable.
+
+
+------------- Consider point 1
+
+Declare
+
+cursor c1 is select empno, ename, sal from emp;
+
+Emp_data c1%ROWTYPE; -- cursor type record variable or record variable is dependant to C1 / inherit data type from c1
+
+v_sal   emp.sal%type; -- inherit from table column type
+
+Begin
+
+For i in c1 loop
+ Emp_data.empno:=i.empno;
+ Emp_data.ename:=i.ename;
+ v_sal:=i.sal;
+dbms_output.put_line('Employee Number is '|| Emp_data.empno || ' and employee name is ' || emp_data.ename || ' and Salary is ' || v_sal);
+end loop;
+
+end;
+
+Other Examples
+
+DECLARE
+v_employees emp%ROWTYPE;
+CURSOR c1 is SELECT * FROM emp;
+BEGIN
+OPEN c1;
+-- Fetch entire row into v_employees record:
+FOR i IN 1..10 LOOP
+FETCH c1 INTO v_employees;
+EXIT WHEN c1%NOTFOUND;
+-- Process data here
+END LOOP;
+CLOSE c1;
+END;
+
+
+DECLARE
+surname employees.last_name%TYPE;
+BEGIN
+DBMS_OUTPUT.PUT_LINE('surname=' || surname);
+END;
+/
+
+
+------------------------------------ Record Type Point 2-------------------------------------
+
+
+DECLARE
+--- Record Type and its component
+TYPE DeptRecTyp IS RECORD (
+dept_id NUMBER(4) NOT NULL := 10,
+dept_name VARCHAR2(30) NOT NULL := 'Administration',
+mgr_id NUMBER(6) := 200,
+loc_id NUMBER(4) := 1700
+);
+dept_rec DeptRecTyp;
+
+----- Another record type with just null parameter
+Type EmprecType is record (empno varchar2(100), ename Varchar2(100), sal number);
+
+Cursor c1 is select * from emp;
+
+emprec Emprectype;
+
+BEGIN
+
+---- Cursor loop through another record type
+for i in c1  loop
+emprec.ename :=i.ename;
+emprec.empno :=i.empno;
+DBMS_OUTPUT.PUT_LINE(emprec.ename || ' ' || emprec.empno);
+end loop;
+
+
+
+DBMS_OUTPUT.PUT_LINE('dept_id: ' || dept_rec.dept_id);
+DBMS_OUTPUT.PUT_LINE('dept_name: ' || dept_rec.dept_name);
+DBMS_OUTPUT.PUT_LINE('mgr_id: ' || dept_rec.mgr_id);
+DBMS_OUTPUT.PUT_LINE('loc_id: ' || dept_rec.loc_id);
+END;
+/
