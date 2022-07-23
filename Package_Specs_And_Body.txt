@@ -1,0 +1,154 @@
+------------------------------------------------Oracle Packages------------------------------------------------------------------------------------------------------
+
+Key Points to remember:-
+
+1. Package body is neccessary Package specification is not necessary. If we create package specs and and body with same name then signature Procedure and Funcation
+   signature is mandatory in specs to eliminate the chances of common error ORA-00904.
+
+2. As I told prior that specification is not necessary just Package body is enough.
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE EMPLOYEES_PROCESS 
+as
+FUNCTION EMP_BONUS(V_EMPNO EMP.EMPNO%TYPE) RETURN NUMBER; 
+PROCEDURE GET_HIREDATE (V_EMPNO emp.EMPNO%TYPE);
+PROCEDURE award_bonus (V_empNO NUMBER, bonus NUMBER);
+PROCEDURE dept_count (cnt OUT number);
+PROCEDURE emp_sal(v_empno IN NUMBER, amnt OUT NUMBER);
+FUNCTION RATE_SALARY(V_EMPNO IN NUMBER) RETURN VARCHAR2;
+TYPE EmpRecTyp IS RECORD (emp_id NUMBER, sal NUMBER);
+CURSOR desc_salary RETURN EmpRecTyp;
+end
+/
+
+CREATE OR REPLACE PACKAGE BODY EMPLOYEES_PROCESS AS
+
+CURSOR desc_salary RETURN EmpRecTyp IS
+SELECT empno, sal FROM emp ORDER BY sal DESC;
+
+
+PROCEDURE GET_HIREDATE (V_EMPNO emp.EMPNO%TYPE)
+IS
+A DATE;
+BEGIN
+SELECT HIREDATE 
+INTO
+A
+FROM EMP
+WHERE
+EMPNO = V_EMPNO;
+END GET_HIREDATE;
+
+FUNCTION EMP_BONUS(V_EMPNO EMP.EMPNO%TYPE)
+RETURN NUMBER 
+IS
+A NUMBER;
+BEGIN
+SELECT SAL 
+INTO
+A
+FROM
+EMP
+WHERE
+EMPNO = V_EMPNO;
+IF A IS NOT NULL THEN 
+A:=(A*100)*.01;
+END IF;
+RETURN(A);
+END EMP_BONUS;
+
+PROCEDURE award_bonus (V_empNO NUMBER, bonus NUMBER) AS
+commission REAL;
+comm_missing EXCEPTION;
+
+BEGIN -- executable part starts here
+SELECT comm / 100 INTO commission FROM emp
+WHERE EMPNO = V_empNO;
+IF commission IS NULL THEN
+RAISE comm_missing;
+ELSE
+INSERT INTO AWARD_BONUS
+VALUES
+(V_EMPNO, COMMISSION);
+END IF;
+EXCEPTION -- exception-handling part starts here
+WHEN comm_missing THEN
+DBMS_OUTPUT.PUT_LINE('This employee does not receive a commission.');
+commission := 0;
+WHEN OTHERS THEN
+NULL; -- for other exceptions do nothing
+END award_bonus;
+
+
+PROCEDURE dept_count (cnt OUT number)
+AS
+BEGIN
+  SELECT COUNT(*) INTO cnt FROM dept;
+END dept_count;
+
+
+PROCEDURE emp_sal(v_empno IN NUMBER, amnt OUT NUMBER)
+AS BEGIN
+SELECT sal INTO amnt FROM emp WHERE empno = v_empno;
+END;
+
+
+FUNCTION RATE_SALARY(V_EMPNO IN NUMBER) RETURN VARCHAR2
+IS
+A VARCHAR2(100);
+B NUMBER;
+BEGIN
+SELECT NVL(SAL,0) 
+INTO
+B
+FROM
+EMP
+WHERE
+EMPNO = V_EMPNO;
+
+IF B BETWEEN 100 AND 1500 THEN
+A :='BEGINNER';
+ELSIF
+B BETWEEN 1501 AND 3000 THEN
+A:='AVERAGE';
+ELSIF
+B BETWEEN 3001 AND 5000 THEN
+A:='GOOD';
+ELSIF
+B > 5001 THEN
+A:='BEST';
+ELSIF B <= 0 THEN
+A:='OUT OF SCOPE';
+END IF;
+RETURN(A);
+
+EXCEPTION WHEN OTHERS THEN NULL;
+A:='NOT CONSIDERABLE';
+RETURN(A);
+END RATE_SALARY;
+
+
+END
+/
+
+Declare
+a number;
+begin
+employees_process.dept_count(a);
+dbms_output.put_line(a);
+end
+/
+Declare
+a number;
+begin
+employees_process.emp_sal('7399', a);
+dbms_output.put_line(a);
+end
+/
+
+select EMPLOYEES_PROCESS.EMP_BONUS('7399') from dual
+/
