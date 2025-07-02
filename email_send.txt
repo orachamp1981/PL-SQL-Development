@@ -1,0 +1,4 @@
+email procedure, send email = 
+BEGIN
+  -- example logic to send email
+END;
