@@ -1,4 +1,1 @@
-email procedure, send email = 
-BEGIN
-  -- example logic to send email
-END;
+email, send email, email procedure  = BEGIN   -- example logic to send email END;
